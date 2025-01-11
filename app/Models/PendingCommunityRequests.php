@@ -5,22 +5,14 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Community extends Model
+class PendingCommunityRequests extends Model
 {
     protected $fillable = [
-        'name',
-        'description',
-        'banner',
-        'rules',
-        'theme',
-        'type',
-        'creator_id',
+        'community_id',
+        'user_id',
+        'accepted',
     ];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
     protected function serializeDate(\DateTimeInterface $date)
     {
         return Carbon::parse($date)->format('Y-m-d H:i:s');  // Customize the format here

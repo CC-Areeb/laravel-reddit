@@ -21,5 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // Reddit communities
-    Route::get('sub_reddit', [CommunityController::class, 'showCommunities']);
+    Route::get('/sub_reddit', [CommunityController::class, 'showCommunities']);
+    Route::post('/sub_reddit/create', [CommunityController::class, 'storeCommunity']);
+    Route::post('/update/moderator', [CommunityController::class, 'storeCommunity']);
+    Route::post('/accept/users', [CommunityController::class, 'addUsersToCommunities']);
 });
