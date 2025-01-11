@@ -20,6 +20,7 @@ class AuthenticationController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => 3
         ]);
 
         return response()->json([
@@ -84,25 +85,22 @@ class AuthenticationController extends Controller
     }
     
 
-    function logout(Request $request)
+    public function logout(Request $request)
     {
-        $login_status = $request->user()->currentAccessToken();
-        $message = "";
-        $status = "";
-
-        if (!$login_status) {
-            $message = "You are already logged out.";
-            $status = 400;
+        $accessToken = $request->user()->currentAccessToken();
+    
+        if (!$accessToken) {
+            return response()->json([
+                'message' => 'You are already logged out.',
+                'status' => 200,
+            ]);
         }
-        
-        else {
-            $login_status->delete();
-            $message = "Logged out successfully.";
-            $status = 200;
-        }
+    
+        // Revoke the current access token
+        $accessToken->delete();
         return response()->json([
-            'message' => $message,
-            'status' => $status
+            'message' => 'Logged out successfully.',
+            'status' => 200,
         ]);
     }
 
