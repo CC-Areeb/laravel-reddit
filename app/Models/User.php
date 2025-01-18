@@ -3,7 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -49,8 +53,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function communities()
+    public function communities(): BelongsToMany
     {
         return $this->belongsToMany(Community::class);
+    }
+
+    public function pendingCommunityRequest(): HasMany
+    {
+        return $this->hasMany(PendingCommunityRequests::class);
+    }
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return Carbon::parse($date)->format('Y-m-d H:i:s');  // Customize the format here
     }
 }

@@ -25,6 +25,7 @@ class AddUserToCommunityRequest extends FormRequest
             'subreddit_id' => 'required|exists:communities,id',
             'user_id' => 'required',
             'user_ids.*' => 'exists:users,id',
+            'is_accepted' => 'required|boolean',
         ];
     }
 
@@ -34,7 +35,7 @@ class AddUserToCommunityRequest extends FormRequest
             'subreddit_id.required' => 'Please choose a subreddit to proceed.',
             'subreddit_id.exists' => 'The selected subreddit does not exist.',
             'user_id.required' => 'You need to select at least one user to add.',
-            'user_id.exists' => 'One or more selected users do not exist in our system.',
+            'user_id.exists' => 'This person is already a part of this subreddit!',
         ];
     }
 }

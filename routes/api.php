@@ -16,7 +16,7 @@ Route::post('/change/password', [AuthenticationController::class, 'change_passwo
 Route::post('/password/reset', [AuthenticationController::class, 'forgot_password']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Super Admin
+    // Super Admin or Community Mod
     Route::get('/users', [UserController::class, 'showUsers']);
 
 
@@ -24,5 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sub_reddit', [CommunityController::class, 'showCommunities']);
     Route::post('/sub_reddit/create', [CommunityController::class, 'storeCommunity']);
     Route::post('/update/moderator', [CommunityController::class, 'storeCommunity']);
+    Route::post('/sub_reddit/join', [CommunityController::class, 'joinSubreddit']);
+    Route::get('pending/users', [CommunityController::class, 'pendingRequests']);
+    Route::post('/apply', [CommunityController::class, 'applyToPrivateSubreddit']);
     Route::post('/accept/users', [CommunityController::class, 'addUsersToCommunities']);
 });
