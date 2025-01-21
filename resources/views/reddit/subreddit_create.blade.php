@@ -30,13 +30,13 @@
 
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center">
-                            <input type="radio" id="public" name="privacy" value="public"
+                            <input type="radio" id="public" name="type" value="0"
                                 class="form-radio h-5 w-5 text-blue-500" checked>
                             <label for="public" class="ml-2 text-sm">Public</label>
                         </div>
 
                         <div class="flex items-center">
-                            <input type="radio" id="private" name="privacy" value="private"
+                            <input type="radio" id="private" name="type" value="1"
                                 class="form-radio h-5 w-5 text-red-500">
                             <label for="private" class="ml-2 text-sm">Private</label>
                         </div>
@@ -50,7 +50,7 @@
                     <div class="flex space-x-6 mb-2">
                         <div class="flex items-center space-x-2">
                             <label for="banner" class="text-sm font-medium text-gray-700">Banner name</label>
-                            <input type="text" name="banner"
+                            <input type="text" name="banner[]"
                                 class="banner_name px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm w-40"
                                 placeholder="Enter banner name">
                         </div>
@@ -58,7 +58,7 @@
                         <!-- Theme Color Picker -->
                         <div class="flex items-center space-x-2">
                             <label for="theme" class="text-sm font-medium text-gray-700">Color</label>
-                            <input type="color" name="theme" value="#ffffff"
+                            <input type="color" name="theme[]" value="#ffffff"
                                 class="theme_color w-10 h-10 p-0 border-none rounded-md cursor-pointer focus:outline-none">
                         </div>
                     </div>
@@ -71,7 +71,11 @@
                 {{-- Subreddit Rules --}}
                 <div class="my-5">
                     <label for="" class="block text-lg font-semibold mb-2">Subreddit rules</label>
-                    <input type="rules" name="rules" id="rules" class="w-full p-4 rounded-md border border-slate-700" required />
+                    <textarea type="rules" name="rules" id="rules" cols="50" rows="9" class="w-full p-4 rounded-md border border-slate-700" required></textarea>
+                </div>
+
+                <div class="">
+                    <input type="submit" class="bg-green-800 text-white p-3 rounded-lg" value="Create Subreddit">
                 </div>
 
             </form>
@@ -117,7 +121,7 @@
             // Create the banner name input field
             let bannerInput = document.createElement('input');
             bannerInput.type = 'text';
-            bannerInput.name = 'banner';
+            bannerInput.name = 'banner[]';
             bannerInput.classList.add('banner_name', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded-md', 'shadow-sm',
                 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500', 'text-sm', 'w-40');
             bannerInput.placeholder = 'Enter banner name';
@@ -139,7 +143,7 @@
             // Create the color picker input field
             let colorPicker = document.createElement('input');
             colorPicker.type = 'color';
-            colorPicker.name = 'theme';
+            colorPicker.name = 'theme[]';
             colorPicker.value = '#ffffff';
             colorPicker.classList.add('theme_color', 'w-10', 'h-10', 'p-0', 'border-none', 'rounded-md', 'cursor-pointer',
                 'focus:outline-none');

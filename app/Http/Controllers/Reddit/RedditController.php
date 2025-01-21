@@ -15,20 +15,23 @@ use Illuminate\View\View;
 class RedditController extends Controller
 {
     // home page
-    public function home(): View {
+    public function home(): View
+    {
         $posts = Community::get();
         return view('reddit.index', with([
             'posts' => $posts
         ]));
     }
-    public function viewSubreddit($id): View {
+    public function viewSubreddit($id): View
+    {
         return view('reddit.single_subreddit', with([
             'community' => Community::findOrFail($id)
         ]));
     }
 
-    public function createSubreddit(): RedirectResponse|View{
-        if (Auth::user()){
+    public function createSubreddit(): RedirectResponse|View
+    {
+        if (Auth::user()) {
             return view('reddit.subreddit_create');
         } else {
             return redirect()->route('home');
@@ -36,28 +39,34 @@ class RedditController extends Controller
     }
 
     // Create a subreddit
-    public function storeSubreddit(CommunityStoreRequest $request) {
-        dd(
-            $request->all()
-        );
+    public function storeSubreddit(CommunityStoreRequest $request)
+    {
         $user = Auth::user();
         $rules = explode(',', $request->rules);
-            $sub_reddit = Community::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'banner' => $request->banner,
-                'rules' => json_encode(array_map('trim', $rules)),
-                'theme' => $request->theme,
-                'type' => $request->type,
-                'creator_id' => $user->id,
-            ]);
+        $banners = $request->input('banner');
+        $themes = $request->input('theme');
+        $bannerThemeData = [];
+        foreach ($banners as $key => $banner) {
+            $bannerThemeData[$banner] = $themes[$key];
+        }
+        $sub_reddit = Community::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'banner_theme' => json_encode($bannerThemeData),
+            'rules' => json_encode(array_map('trim', $rules)),
+            'type' => $request->type,
+            'creator_id' => $user->id,
+        ]);
 
-            // add information in pivot table
-            CommunityUsers::create([
-                'community_id' => $sub_reddit->id,
-                'user_id' => $user->id,
-                'community_moderator' => 1
-            ]);
+        // add information in pivot table
+        CommunityUsers::create([
+            'community_id' => $sub_reddit->id,
+            'user_id' => $user->id,
+            'community_moderator' => 1
+        ]);
+
+        return redirect()->route('view.single.subreddit', ['id' => $sub_reddit->id])
+            ->with('success', 'You have successfully created r/' . $sub_reddit->name);
     }
 
     // Add more banners

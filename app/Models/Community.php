@@ -12,9 +12,8 @@ class Community extends Model
     protected $fillable = [
         'name',
         'description',
-        'banner',
+        'banner_theme',
         'rules',
-        'theme',
         'type',
         'creator_id',
     ];
