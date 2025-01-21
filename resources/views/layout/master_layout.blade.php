@@ -12,11 +12,11 @@
     @vite('resources/js/app.js')
 
     {{-- Navigation bar --}}
-    <nav class="bg-white border-gray-200 dark:bg-gray-700 sticky top-0">
+    <nav class="bg-white border-gray-200 dark:bg-teal-600 sticky top-0">
         <div class="max-w-screen flex flex-wrap items-center justify-between p-4">
             <div>
                 <a href="{{ route('home') }}"
-                    class="text-white flex items-center space-x-3 rtl:space-x-reverse hover:text-blue-300">
+                    class="text-teal-100 flex items-center space-x-3 rtl:space-x-reverse hover:text-slate-900 hover:bg-gray-200 px-3 py-1 rounded-lg hover:ease-in duration-300">
                     Reddit
                 </a>
             </div>
@@ -28,14 +28,14 @@
                     @guest
                         <li>
                             <a href="{{ route('register') }}"
-                                class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 hover:text-blue-300 md:p-0 dark:text-white">
+                                class="block text-teal-100 hover:text-slate-900 hover:bg-gray-200 px-3 py-1 rounded-lg hover:ease-in duration-300">
                                 Register
                             </a>
                         </li>
 
                         <li>
                             <a href="{{ route('login') }}"
-                                class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 hover:text-blue-300 md:p-0 dark:text-white">
+                                class="block text-teal-100 hover:text-slate-900 hover:bg-gray-200 px-3 py-1 rounded-lg hover:ease-in duration-300">
                                 Login
                             </a>
                         </li>
@@ -45,13 +45,13 @@
                         <form action="{{ route('logout.users') }}" method="post">
                             @csrf
                             <button type="submit"
-                                class="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 hover:text-blue-300 md:p-0 dark:text-white">Logout</button>
+                                class="block text-teal-100 hover:text-slate-900 hover:bg-gray-200 px-3 py-1 rounded-lg hover:ease-in duration-300">Logout</button>
                         </form>
                     @endauth
 
                     <li>
                         <button type="button" id="dropdownButton"
-                            class="custom_dropdown p-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                            class="custom_dropdown p-2 text-sm font-medium text-teal-100 focus:outline-none rounded-lg hover:bg-teal-100 hover:text-slate-900 hover:ease-in duration-300">
                             More
                         </button>
                         <!-- Custom Dropdown -->
@@ -78,7 +78,7 @@
         </div>
     </nav>
 
-    {{-- sidebar --}}
+    {{-- sidebar toggle button --}}
     <button data-drawer-target="sidebar-multi-level-sidebar" data-drawer-toggle="sidebar-multi-level-sidebar"
         aria-controls="sidebar-multi-level-sidebar" type="button"
         class="side_menu_btn inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -91,6 +91,7 @@
         </svg>
     </button>
 
+    {{-- sidebar menu --}}
     <aside id="sidebar-multi-level-sidebar"
         class="fixed top-15 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar">
@@ -109,6 +110,16 @@
                         <span class="ms-3">Popular</span>
                     </a>
                 </li>
+
+                {{-- create subreddit --}}
+                @auth
+                    <li>
+                        <a href="{{ route('subreddit.create') }}"
+                            class="flex items-center p-2 text-white hover:text-slate-900 hover:ease-in duration-300 hover:bg-gray-300 rounded-md">
+                            <span class="ms-3">Create a subreddit</span>
+                        </a>
+                    </li>
+                @endauth
             </ul>
         </div>
     </aside>
@@ -117,7 +128,6 @@
         {{-- content will be injected here --}}
         @yield('content')
     </div>
-
 
     <script>
         document.getElementById('dropdownButton').addEventListener('click', function() {

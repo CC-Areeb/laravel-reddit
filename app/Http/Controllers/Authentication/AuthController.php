@@ -12,12 +12,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // show registration form
-    public function register()
-    {
-        return view('authentication.index');
-    }
-
     public function registerUser(RegisterRequest $request)
     {
         $user = User::create([
@@ -28,11 +22,6 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
         return redirect()->route('login');
-    }
-
-    public function login()
-    {
-        return view('authentication.login');
     }
 
     public function loginUsers(LoginRequest $request)
