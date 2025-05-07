@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Authentication\AuthController;
+use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Reddit\RedditController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,12 @@ Route::middleware(['auth', 'throttle:60,1'])->group(function () {
     Route::post('/post', [RedditController::class, 'redditPost'])->name('post.submit');
     Route::post('/subreddit/store', [RedditController::class, 'storeSubreddit'])->name('subreddit.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.users');
+
+    // Display the subscription cards
+Route::get('/subscriptions', [PaymentController::class, 'showPlans'])->name('subscriptions');
+
+// Handle subscription form POST
+Route::post('/subscribe/{plan}', [PaymentController::class, 'subscribe'])->name('subscribe');
 });
 
 

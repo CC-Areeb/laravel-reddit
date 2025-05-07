@@ -111,15 +111,24 @@
                     </a>
                 </li>
 
-                {{-- create subreddit --}}
                 @auth
+                    {{-- create subreddit --}}
                     <li>
                         <a href="{{ route('subreddit.create') }}"
                             class="flex items-center p-2 text-white hover:text-slate-900 hover:ease-in duration-300 hover:bg-gray-300 rounded-md">
                             <span class="ms-3">Create a subreddit</span>
                         </a>
                     </li>
+
+                    {{-- Payment --}}
+                    <li>
+                        <a href="{{ route('subscriptions') }}"
+                            class="flex items-center p-2 text-white hover:text-slate-900 hover:ease-in duration-300 hover:bg-gray-300 rounded-md">
+                            <span class="ms-3">Buy stickers</span>
+                        </a>
+                    </li>
                 @endauth
+
             </ul>
         </div>
     </aside>

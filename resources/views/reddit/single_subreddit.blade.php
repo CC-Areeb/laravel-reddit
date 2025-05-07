@@ -34,7 +34,7 @@
 
                         {{-- Post Body --}}
                         <div class="text-gray-800 dark:text-gray-100 whitespace-pre-line">
-                            @if(Str::contains($post->post, '|') && Str::contains($post->post, ',')) 
+                            @if(Str::contains($post->post, '|') && Str::contains($post->post, ','))
                                 {{-- Poll-style rendering --}}
                                 @php
                                     [$heading, $options] = explode('|', $post->post, 2);
