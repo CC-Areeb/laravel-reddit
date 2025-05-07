@@ -31,6 +31,11 @@ class Community extends Model
     public function pendingCommunityRequests(): HasMany {
         return $this->hasMany(PendingCommunityRequests::class, 'community_id');
     }
+    
+    public function posts()
+    {
+        return $this->hasMany(RedditPosts::class, 'community_id');
+    }
 
     protected function serializeDate(\DateTimeInterface $date)
     {

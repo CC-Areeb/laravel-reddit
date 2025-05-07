@@ -22,11 +22,19 @@ class RedditController extends Controller
             'posts' => $posts
         ]));
     }
+
     public function viewSubreddit($id): View
     {
-        return view('reddit.single_subreddit', with([
-            'community' => Community::findOrFail($id)
-        ]));
+        $community = Community::with(['posts' => function ($query) {
+            $query->select('id', 'title', 'post', 'community_id', 'user_id')
+            ->with('user:id,name')
+            ->orderBy('id', 'desc');
+        }])->findOrFail($id);
+
+        return view('reddit.single_subreddit', [
+            'community' => $community,
+            'posts' => $community->posts,
+        ]);
     }
 
     public function createSubreddit(): RedirectResponse|View
@@ -69,16 +77,46 @@ class RedditController extends Controller
             ->with('success', 'You have successfully created r/' . $sub_reddit->name);
     }
 
-    // Add more banners
+    // make a reddit post
+    public function redditPost(Request $request) {
+        $subreddit = Community::findOrFail($request->community_id);
+        $post = '';
+        if ($request->filled('text_post')) {
+            $post = $request->text_post;
+        } elseif ($request->filled('file_post')) {
+            $post = $request->file_post;
+        } elseif ($request->filled('link_post')) {
+            $post = $request->link_post;
+        } elseif ($request->filled('poll_heading')) {
+            // If it's a poll, extract poll data
+            $pollHeading = $request->input('poll_heading');
+            $pollOptions = [];
 
+            // Loop through the options and collect them
+            for ($i = 1; $i <= 5; $i++) {
+                $option = $request->input('option_' . $i);
+                if ($option) {
+                    $pollOptions[] = $option;
+                }
+            }
 
-    //make a reddit post
-    // public function redditPost(Request $request) {
-    //     $subreddit = Community::findOrFail($request->id);
-    //     if ($subreddit) {
-    //         $post = RedditPosts::create([
-    //             'post' => $request->post
-    //         ]);
-    //     }
-    // }
+            // Join the poll options into a single string with comma separation
+            $pollOptionsString = implode(',', $pollOptions);
+
+            // Combine the heading and options into a single string
+            $post = $pollHeading . " | " . $pollOptionsString;
+        }
+
+        if ($subreddit) {
+            RedditPosts::create([
+                'post' => $post,
+                'community_id' => $request->community_id,
+                'title' => $request->title,
+                'user_id' => Auth::user()->id
+            ]);
+        return redirect()->back()->with('success', 'Post has been made successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Sorry but no such subreddit found!');
+        }
+    }
 }

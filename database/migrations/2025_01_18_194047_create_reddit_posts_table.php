@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('community_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->longText('title')->nullable();
-            $table->json('post')->nullable();
+            $table->longText('post')->nullable();
             $table->bigInteger('up_votes')->default(0);
             $table->bigInteger('down_votes')->default(0);
             $table->timestamps();
