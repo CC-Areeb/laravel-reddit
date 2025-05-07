@@ -25,9 +25,6 @@ class PaymentController extends Controller
 
     public function subscribe(Request $request, string $plan)
     {
-
-        dd($request->all());
-
         $request->validate([
             'payment_method' => 'required',
             'plan' => 'required|in:basic,pro,premium',
