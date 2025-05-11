@@ -135,13 +135,13 @@
 
     {{-- Show messages here --}}
     @if (session('success'))
-    <div id="success-message" class="text-xl text-center bg-green-400 text-white p-4 transition-opacity duration-300 opacity-100">
+    <div id="success-message" class="text-xl text-center bg-green-400 text-white p-4 transition-opacity duration-300 opacity-100" style="margin:0px 0px 0px 256px;">
         {{ session('success') }}
     </div>
     @endif
 
     @if (session('error'))
-    <div id="error-message" class="text-xl text-center bg-red-400 text-white p-4 transition-opacity duration-300 opacity-100">
+    <div id="error-message" class="text-xl text-center bg-red-400 text-white p-4 transition-opacity duration-300 opacity-100" style="margin:0px 0px 0px 256px;">
         {{ session('error') }}
     </div>
     @endif

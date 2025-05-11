@@ -3,6 +3,7 @@
 use App\Http\Controllers\Authentication\AuthController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Reddit\RedditController;
+use App\Http\Controllers\Stripe\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Guest routes
@@ -32,6 +33,9 @@ Route::get('/subscriptions', [PaymentController::class, 'showPlans'])->name('sub
 
 // Handle subscription form POST
 Route::post('/subscribe/{plan}', [PaymentController::class, 'subscribe'])->name('subscribe');
+
+// stripe webhook url
+Route::post('/webhook/stripe', [StripeWebhookController::class, 'handleWebhook']);
 });
 
 

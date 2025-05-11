@@ -23,31 +23,49 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function subscribe(Request $request, string $plan)
+    public function subscribe(Request $request, string $plan = null)
     {
+        // Validate payment_method and selected plan
         $request->validate([
             'payment_method' => 'required',
-            'plan' => 'required|in:basic,pro,premium',
+            'selected_plan' => 'required|in:basic,pro,premium',
         ]);
 
-        Stripe::setApiKey(config('services.stripe.secret'));  // Use secret key for server-side actions
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        // Define the available plans
         $plans = [
             'basic' => 'price_1RMCANGfu8ydv2wP5n337CkR',
-            'pro' => 'price_123abcPro',
-            'premium' => 'price_123abcPremium',
+            'pro' => 'price_1RMCHiGfu8ydv2wPbpK7fOEi',
+            'premium' => 'price_1RMCHzGfu8ydv2wP1exqLxab',
         ];
 
+        // Use selected_plan from the request if no plan is passed in the URL
+        $plan = $plan ?: $request->input('selected_plan');
+
+        // Check if the plan exists
         if (!array_key_exists($plan, $plans)) {
             return back()->with('error', 'Invalid plan selected.');
         }
 
-        try {
-            $user = Auth::user(); // Ensure the user is authenticated
+        // Determine the price based on the selected plan
+        $planPrice = 0;
+        switch ($plan) {
+            case 'basic':
+                $planPrice = 10; // $10 for Basic
+                break;
+            case 'pro':
+                $planPrice = 20; // $20 for Pro
+                break;
+            case 'premium':
+                $planPrice = 30; // $30 for Premium
+                break;
+        }
 
-            // If user doesn't have a Stripe ID, create a new customer
+        try {
+            $user = Auth::user();
+
             if (!$user->stripe_id) {
+                // Create a new Stripe customer if the user doesn't have a Stripe ID
                 $customer = Customer::create([
                     'email' => $user->email,
                     'name' => $user->name,
@@ -56,40 +74,27 @@ class PaymentController extends Controller
                 $user->save();
             }
 
-            // Attach the payment method
-            $paymentMethod = \Stripe\PaymentMethod::retrieve($request->payment_method);
+            $paymentMethod = PaymentMethod::retrieve($request->payment_method);
             $paymentMethod->attach(['customer' => $user->stripe_id]);
 
             // Set the default payment method for the customer
-            \Stripe\Customer::update($user->stripe_id, [
+            Customer::update($user->stripe_id, [
                 'invoice_settings' => ['default_payment_method' => $paymentMethod->id],
             ]);
 
-            // Create the subscription
-            $subscription = \Stripe\Subscription::create([
+            // Create a subscription
+            Subscription::create([
                 'customer' => $user->stripe_id,
                 'items' => [['price' => $plans[$plan]]],
                 'default_payment_method' => $paymentMethod->id,
-                'payment_behavior' => 'default_incomplete', // Allows for subscription creation without immediate payment
+                'payment_settings' => [
+                    'payment_method_types' => ['card'],
+                    'save_default_payment_method' => 'on_subscription',
+                ],
+                'expand' => ['latest_invoice'],
             ]);
 
-            // Retrieve the latest invoice
-            $invoice = \Stripe\Invoice::retrieve($subscription->latest_invoice);
-
-            if ($invoice) {
-                // Check if a payment intent is created
-                $paymentIntent = $invoice->payment_intent;
-
-                if ($paymentIntent) {
-                    // Return the payment intent client secret for frontend to confirm the payment
-                    return redirect()->route('subscriptions')
-                        ->with('success', 'Subscription created! Please complete your payment.');
-                } else {
-                    return back()->with('error', 'No payment intent found.');
-                }
-            } else {
-                return back()->with('error', 'Subscription invoice not found.');
-            }
+            return redirect()->back()->with('success', "You have successfully purchased the {$plan} subscription for \${$planPrice}");
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
